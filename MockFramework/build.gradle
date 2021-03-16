@@ -32,12 +32,12 @@ dependencies {
     compile group: 'org.javassist', name: 'javassist', version: '3.27.0-GA'
 
 }
-jar {
-    manifest {
-        attributes('Premain-Class': 'ru.nsu.mockframework.Agent')
-    }
-}
+//jar {
+//    manifest {
+//        attributes('Premain-Class': 'ru.nsu.mockframework.Agent')
+//    }
+//}
 application {
     // Define the main class for the application.
-    mainClassName = 'ru.nsu.mockframework.App'
+    mainClassName = 'ru.nsu.app.App'
 }

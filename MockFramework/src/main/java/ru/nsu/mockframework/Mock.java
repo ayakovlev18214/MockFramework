@@ -1,8 +1,5 @@
 package ru.nsu.mockframework;
 
-
-import com.google.j2objc.annotations.ReflectionSupport;
-import com.google.j2objc.annotations.ReflectionSupport.Level;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
