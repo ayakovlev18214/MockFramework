@@ -4,34 +4,36 @@
 package ru.nsu.app;
 
 import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.Modifier;
 import ru.nsu.mockframework.JMock;
-import ru.nsu.mockframework.Mock;
-
 
 public class App {
 
-  @Mock
-  private static TestClass kektest;
+  //@Mock
+  //private static TestClass testF;
 
   private static void test() {
-    JMock.removeFinals(TestClass.class); //TODO mb make it better
+    //JMock.removeFinals(TestClass.class); //TODO mb make it better
     TestClass test = new TestClass();
-    System.out.println(test.testString());
+    System.out.println(test.testString(1, '\0'));
     test = JMock.mock(TestClass.class);
-    System.out.println(test.testString() + " called from .mock");
-    JMock.initMocks(App.class);
-    System.out.println(kektest.testString() + " called from initMocks");
-    JMock.when(kektest.testString()).thenReturn("mock");
-    System.out.println(kektest.testString());
-    JMock.when(kektest.testInt()).thenReturn(228);
-    System.out.println(kektest.testInt());
-    JMock.when(kektest.testString()).thenReturn("22");
+//    System.out.println(test.testString(1, '\0'));
+    JMock.when(test.testString(0, 'a')).thenReturn("OKAY");
+    System.out.println(test.testString(1, '\0'));
+    JMock.when(test.testString1()).thenReturn("OKAY2");
+    System.out.println(test.testString1());
+    JMock.when(test.testChar()).thenReturn('b');
+    System.out.println(test.testChar());
+    System.out.println(test.testString1());
+    System.out.println(test.testString(1, '\0'));
+//    JMock.when(test.testInt()).thenReturn(1);
+//    System.out.println(test.testInt());
+
+//    JMock.when(test.testString(0, 'a')).thenReturn("OKAYx2");
+//    System.out.println(test.testString(1, '\0'));
   }
 
   public static void main(String[] args) {
-
     test();
+
   }
 }
