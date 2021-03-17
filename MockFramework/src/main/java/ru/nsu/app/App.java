@@ -12,11 +12,10 @@ public class App {
   //private static TestClass testF;
 
   private static void test() {
-    //JMock.removeFinals(TestClass.class); //TODO mb make it better
     TestClass test = new TestClass();
     System.out.println(test.testString(1, '\0'));
     test = JMock.mock(TestClass.class);
-//    System.out.println(test.testString(1, '\0'));
+    System.out.println(test.testString(1, '\0'));
     JMock.when(test.testString(0, 'a')).thenReturn("OKAY");
     System.out.println(test.testString(1, '\0'));
     JMock.when(test.testString1()).thenReturn("OKAY2");
@@ -25,11 +24,11 @@ public class App {
     System.out.println(test.testChar());
     System.out.println(test.testString1());
     System.out.println(test.testString(1, '\0'));
-//    JMock.when(test.testInt()).thenReturn(1);
-//    System.out.println(test.testInt());
+    JMock.when(test.testInt()).thenReturn(1);
+    System.out.println(test.testInt());
 
-//    JMock.when(test.testString(0, 'a')).thenReturn("OKAYx2");
-//    System.out.println(test.testString(1, '\0'));
+    JMock.when(test.testString(0, 'a')).thenReturn("OKAYx2");
+    System.out.println(test.testString(1, '\0'));
   }
 
   public static void main(String[] args) {

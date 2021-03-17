@@ -18,7 +18,7 @@ public class TestClass {
       return 228;
     }
 
-    public Character testChar() {return 'a'; }
+    public char testChar() {return 'a'; }
 
     public void testVoid() {
     }
