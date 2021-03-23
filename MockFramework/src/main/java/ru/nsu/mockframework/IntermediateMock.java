@@ -34,7 +34,7 @@ public class IntermediateMock {
 
         try {
             CtClass lastStub = cp.get(mock.getLink().getClass().getName());
-            CtClass newStub = cp.makeClass("Mock" + UUID.randomUUID().toString().substring(0, 7), lastStub); // subclass
+            CtClass newStub = cp.makeClass("Mock" + UUID.randomUUID().toString().replace("-", ""), lastStub); // subclass
             CtMethod oldMethod = lastStub.getMethod(methodName, desc);
             CtMethod newMethod = CtNewMethod.copy(oldMethod, methodName, newStub, null);
 

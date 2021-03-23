@@ -4,11 +4,43 @@
 package ru.nsu.mockframework;
 
 import org.junit.Test;
+import ru.nsu.app.TestClass;
+
 import static org.junit.Assert.*;
 
-//public class AppTest {
-//    @Test public void testAppHasAGreeting() {
-//        App classUnderTest = new App();
-//        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
-//    }
-//}
+public class AppTest {
+    @Test public void testNonStatic() {
+        TestClass test = new TestClass();
+        System.out.println(test.testString(1, '\0'));
+
+        test = JMock.mock(TestClass.class);
+        System.out.println(test.testString(1, '\0'));
+
+        JMock.when(test.testString(0, 'a')).thenReturn("OKAY");
+        System.out.println(test.testString(1, '\0'));
+
+        JMock.when(test.testString1()).thenReturn("OKAY2");
+        System.out.println(test.testString1());
+
+        JMock.when(test.testChar()).thenReturn('b');
+        System.out.println(test.testChar());
+        System.out.println(test.testString1());
+        System.out.println(test.testString(1, '\0'));
+
+        JMock.when(test.testInt()).thenReturn(1);
+        System.out.println(test.testInt());
+
+        JMock.when(test.testString(0, 'a')).thenReturn("OKAYx2");
+        System.out.println(test.testString(1, '\0'));
+    }
+
+    @Test public void testStatic() {
+        System.out.println(TestClass.staticStr());
+        try(StaticMock mock = new StaticMock(TestClass.class)) {
+            System.out.println(TestClass.staticStr());
+            JMock.when(TestClass.staticStr()).thenReturn("TEST MOCK");
+            System.out.println(TestClass.staticStr());
+        }
+        System.out.println(TestClass.staticStr());
+    }
+}
