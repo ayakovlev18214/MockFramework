@@ -3,50 +3,47 @@
  */
 package ru.nsu.mockframework;
 
+import org.junit.Assert;
 import org.junit.Test;
 import ru.nsu.app.TestClass;
-
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
 public class AppTest {
     @Test public void testNonStatic() {
         TestClass test = new TestClass();
-        System.out.println(test.testString(1, '\0'));
+        Assert.assertEquals("kk", test.testString(1, '\0'));
 
         test = JMock.mock(TestClass.class);
-        System.out.println(test.testString(1, '\0'));
+        Assert.assertNull(test.testString(1, '\0'));
 
-        JMock.when(test.testString(0, 'a')).thenReturn("OKAY");
-        System.out.println(test.testString(1, '\0'));
+        JMock.when(test.testString(JMock.anyNumerical(), JMock.anyChar())).thenReturn("OKAY");
+        Assert.assertEquals("OKAY", test.testString(1, '\0'));
 
         JMock.when(test.testString1()).thenReturn("OKAY2");
-        System.out.println(test.testString1());
+        Assert.assertEquals("OKAY2", test.testString1());
 
         JMock.when(test.testChar()).thenReturn('b');
-        System.out.println(test.testChar());
-        System.out.println(test.testString1());
-        System.out.println(test.testString(1, '\0'));
+        Assert.assertEquals('b', test.testChar());
+        Assert.assertEquals("OKAY2", test.testString1());
+        Assert.assertEquals("OKAY", test.testString(1, '\0'));
 
         JMock.when(test.testInt()).thenReturn(1);
-        System.out.println(test.testInt());
+        Assert.assertEquals(1, test.testInt());
 
-        JMock.when(test.testString(0, 'a')).thenReturn("OKAYx2");
-        System.out.println(test.testString(1, '\0'));
-
-        System.out.println(Arrays.toString(test.testIntArr()));
-        JMock.when(test.testIntArr()).thenReturn(new int[]{3, 3, 3});
-        System.out.println(Arrays.toString(test.testIntArr()));
+        JMock.when(test.testString(JMock.eq(1), JMock.eq('\0'))).thenReturn("OnlyIf1And\0");
+        Assert.assertEquals("OnlyIf1And\0", test.testString(1, '\0'));
+        Assert.assertEquals("OKAY", test.testString(0, '\0'));
+        Assert.assertEquals("OKAY", test.testString(1, '\n'));
     }
 
     @Test public void testStatic() {
-        System.out.println(TestClass.staticStr());
+        Assert.assertEquals("TEST STATIC", TestClass.staticStr());
         try(StaticMock mock = new StaticMock(TestClass.class)) {
-            System.out.println(TestClass.staticStr());
+            Assert.assertNull(TestClass.staticStr());
             JMock.when(TestClass.staticStr()).thenReturn("TEST MOCK");
-            System.out.println(TestClass.staticStr());
+            Assert.assertEquals("TEST MOCK", TestClass.staticStr());
         }
-        System.out.println(TestClass.staticStr());
+        Assert.assertEquals("TEST STATIC", TestClass.staticStr());
     }
 }

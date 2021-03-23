@@ -12,11 +12,17 @@ public class TestClass {
     }
 
     public String testString(int a, char b) {
-       return "test1";
+       return "kk";
     }
+
     public String testString1() {
-        return "test2";
+        return "kek";
     }
+
+    public String testInt1(int integer) {
+        return String.valueOf(integer);
+    }
+
 
     public int testInt() {
       return 228;
