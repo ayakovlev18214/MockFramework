@@ -11,12 +11,18 @@ public class TestClass {
         return "TEST STATIC";
     }
 
-    public String testString(int a, char b) {
-       return "test1";
+    public int testString(int a) {
+       return a;
     }
-    public String testString1() {
-        return "test2";
+
+    public String testString2(String string, long str) {
+        return string + " " + str;
     }
+
+    public String testInt1(int integer) {
+        return String.valueOf(integer);
+    }
+
 
     public int testInt() {
       return 228;
