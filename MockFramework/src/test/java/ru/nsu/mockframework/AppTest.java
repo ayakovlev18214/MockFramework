@@ -6,6 +6,8 @@ package ru.nsu.mockframework;
 import org.junit.Test;
 import ru.nsu.app.TestClass;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class AppTest {
@@ -32,6 +34,10 @@ public class AppTest {
 
         JMock.when(test.testString(0, 'a')).thenReturn("OKAYx2");
         System.out.println(test.testString(1, '\0'));
+
+        System.out.println(Arrays.toString(test.testIntArr()));
+        JMock.when(test.testIntArr()).thenReturn(new int[]{3, 3, 3});
+        System.out.println(Arrays.toString(test.testIntArr()));
     }
 
     @Test public void testStatic() {

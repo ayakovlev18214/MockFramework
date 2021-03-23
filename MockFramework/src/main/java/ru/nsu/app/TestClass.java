@@ -24,6 +24,8 @@ public class TestClass {
 
     public char testChar() {return 'a'; }
 
+    public int[] testIntArr() {return new int[]{1, 2, 3};}
+
     public void testVoid() {
     }
 }
