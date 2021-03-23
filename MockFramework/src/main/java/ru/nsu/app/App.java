@@ -3,47 +3,10 @@
  */
 package ru.nsu.app;
 
-import ru.nsu.mockframework.JMock;
-import ru.nsu.mockframework.StaticMock;
-
 public class App {
 
-  private static void test() {
-    TestClass test = new TestClass();
-    System.out.println(test.testString2("string1", '2'));
-    test = JMock.mock(TestClass.class);
-    JMock.when(test.testString2(JMock.eq("str1"), JMock.anyNumerical())).thenReturn("OKAY");
-    System.out.println(test.testString2("str1", 'e'));
-    System.out.println(test.testString2("str1", 'j'));
+    public static void main(String[] args) {
 
-    JMock.when(test.testInt1(JMock.eq(5))).thenReturn("ОГО ВАУ");
-    System.out.println(test.testInt1(5));
-    System.out.println(test.testInt1(6));
-
-//    JMock.when(test.testString2()).thenReturn("OKAY2");
-//    System.out.println(test.testString2());
-
-//    JMock.when(test.testChar()).thenReturn('b');
-//    System.out.println(test.testChar());
-//    System.out.println(test.testString2());
-//    System.out.println(test.testString(1, '\0'));
-//
-//    JMock.when(test.testInt()).thenReturn(1);
-//    System.out.println(test.testInt());
-//
-//    JMock.when(test.testString(0, 'a')).thenReturn("OKAYx2");
-//    System.out.println(test.testString(1, '\0'));
-  }
-
-  private static void test2() {
-    System.out.println(TestClass.staticStr());
-    try(StaticMock mock = new StaticMock(TestClass.class)) {
-      System.out.println(TestClass.staticStr());
     }
-    System.out.println(TestClass.staticStr());
-  }
 
-  public static void main(String[] args) {
-    test();
-  }
 }

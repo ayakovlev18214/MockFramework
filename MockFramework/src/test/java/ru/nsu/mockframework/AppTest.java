@@ -3,12 +3,47 @@
  */
 package ru.nsu.mockframework;
 
+import org.junit.Assert;
 import org.junit.Test;
+import ru.nsu.app.TestClass;
+
 import static org.junit.Assert.*;
 
-//public class AppTest {
-//    @Test public void testAppHasAGreeting() {
-//        App classUnderTest = new App();
-//        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
-//    }
-//}
+public class AppTest {
+    @Test public void testNonStatic() {
+        TestClass test = new TestClass();
+        Assert.assertEquals("kk", test.testString(1, '\0'));
+
+        test = JMock.mock(TestClass.class);
+        Assert.assertNull(test.testString(1, '\0'));
+
+        JMock.when(test.testString(JMock.anyNumerical(), JMock.anyChar())).thenReturn("OKAY");
+        Assert.assertEquals("OKAY", test.testString(1, '\0'));
+
+        JMock.when(test.testString1()).thenReturn("OKAY2");
+        Assert.assertEquals("OKAY2", test.testString1());
+
+        JMock.when(test.testChar()).thenReturn('b');
+        Assert.assertEquals('b', test.testChar());
+        Assert.assertEquals("OKAY2", test.testString1());
+        Assert.assertEquals("OKAY", test.testString(1, '\0'));
+
+        JMock.when(test.testInt()).thenReturn(1);
+        Assert.assertEquals(1, test.testInt());
+
+        JMock.when(test.testString(JMock.eq(1), JMock.eq('\0'))).thenReturn("OnlyIf1And\0");
+        Assert.assertEquals("OnlyIf1And\0", test.testString(1, '\0'));
+        Assert.assertEquals("OKAY", test.testString(0, '\0'));
+        Assert.assertEquals("OKAY", test.testString(1, '\n'));
+    }
+
+    @Test public void testStatic() {
+        System.out.println(TestClass.staticStr());
+        try(StaticMock mock = new StaticMock(TestClass.class)) {
+            System.out.println(TestClass.staticStr());
+            JMock.when(TestClass.staticStr()).thenReturn("TEST MOCK");
+            System.out.println(TestClass.staticStr());
+        }
+        System.out.println(TestClass.staticStr());
+    }
+}
