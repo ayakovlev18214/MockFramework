@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class IntermediateRunningMock {
+public class IntermediateMock {
 
     private static List<Object> returnVal = new ArrayList<>();
     private final IJMock mock;
@@ -15,8 +15,8 @@ public class IntermediateRunningMock {
     private final String desc;
     private final String rType;
 
-    IntermediateRunningMock(IJMock mock, String methodName,
-                            String desc, String rType) {
+    IntermediateMock(IJMock mock, String methodName,
+                     String desc, String rType) {
         this.mock = mock;
         this.methodName = methodName;
         this.desc = desc;
@@ -28,8 +28,8 @@ public class IntermediateRunningMock {
     }
 
     public void thenReturn(Object returnVal) {
-        int id = IntermediateRunningMock.returnVal.size();
-        IntermediateRunningMock.returnVal.add(returnVal);
+        int id = IntermediateMock.returnVal.size();
+        IntermediateMock.returnVal.add(returnVal);
         ClassPool cp = ClassPool.getDefault();
 
         try {
@@ -39,7 +39,7 @@ public class IntermediateRunningMock {
             CtMethod newMethod = CtNewMethod.copy(oldMethod, methodName, newStub, null);
 
 
-            newMethod.setBody("{return ($r)IntermediateRunningMock.getLastRef("+id+");}");
+            newMethod.setBody("{return ($r)IntermediateMock.getLastRef("+id+");}");
             newStub.addMethod(newMethod);
             mock.setLink(newStub.toClass().getDeclaredConstructor().newInstance());
 

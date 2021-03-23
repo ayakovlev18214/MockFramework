@@ -7,6 +7,10 @@ public class TestClass {
 
     }
 
+    public static String staticStr() {
+        return "TEST STATIC";
+    }
+
     public String testString(int a, char b) {
        return "test1";
     }
@@ -14,7 +18,7 @@ public class TestClass {
         return "test2";
     }
 
-    public Integer testInt() {
+    public int testInt() {
       return 228;
     }
 

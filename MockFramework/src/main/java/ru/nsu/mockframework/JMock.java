@@ -1,10 +1,11 @@
 package ru.nsu.mockframework;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import javassist.*;
-import javassist.util.HotSwapper;
+import javassist.util.HotSwapAgent;
 
 /**
  * Main Framework class
@@ -13,9 +14,9 @@ public class JMock {
     private final static String callback =
             "{MockHandler.callback(this, \"";
     private static int counter = 0;
-    private static IntermediateRunningMock lastRanMock;
+    private static IntermediateMock lastRanMock;
 
-    public static void setLastRanMock(IntermediateRunningMock lastRanMock) {
+    public static void setLastRanMock(IntermediateMock lastRanMock) {
         JMock.lastRanMock = lastRanMock;
     }
 
@@ -23,39 +24,25 @@ public class JMock {
         counter++;
     }
 
-    public static void removeFinals(String cName) {
+    public static void removeFinals(CtClass cc) {
         try {
-            ClassPool cp = ClassPool.getDefault();
-            CtClass cc = cp.get(cName);
             int modifiers = cc.getModifiers();
             if (Modifier.isFinal(modifiers)) {
                 int notFinalModifier = Modifier.clear(modifiers, Modifier.FINAL);
                 cc.setModifiers(notFinalModifier);
             }
-            cc.toClass();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static String primitiveToClass(String type) {
-        return switch (type) {
-            case "byte" -> "Byte";
-            case "short" -> "Short";
-            case "int" -> "Integer";
-            case "long" -> "Long";
-            case "float" -> "Float";
-            case "double" -> "Double";
-            case "char" -> "Character";
-            case "boolean" -> "Boolean";
-            default -> type;
-        };
-    }
-
     public static <T> T mock(Class<T> objectClass) {
         try {
             ClassPool cp = ClassPool.getDefault();
-
+            CtClass oc = cp.get(objectClass.getName());
+            //removeFinals(oc);
+            HotSwapAgent.redefine(objectClass, oc);
             cp.importPackage("ru.nsu.mockframework");
             CtClass cc = cp.makeClass(objectClass.getName() + "MockDelegator" + counter);
             CtClass objClass = cp.get(objectClass.getName());
@@ -69,6 +56,9 @@ public class JMock {
 
             stub.setSuperclass(objClass);
             for (CtMethod method : objClass.getDeclaredMethods()) {
+                if (Modifier.isStatic(method.getModifiers())) {
+                    continue;
+                }
                 CtMethod m = CtNewMethod.copy(method, method.getName(), stub, null);
                 m.setBody(null);
                 stub.addMethod(m);
@@ -106,13 +96,14 @@ public class JMock {
                 | NoSuchMethodException
                 | IllegalAccessException
                 | CannotCompileException
-                | NotFoundException e) {
+                | NotFoundException
+                | IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Error while mocking class " + objectClass.getName() + "\n" + e);
         }
     }
 
-    public static IntermediateRunningMock when(Object funcCall) {
+    public static IntermediateMock when(Object funcCall) {
         return lastRanMock;
     }
 

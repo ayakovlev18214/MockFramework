@@ -41,3 +41,5 @@ application {
     // Define the main class for the application.
     mainClassName = 'ru.nsu.app.App'
 }
+
+applicationDefaultJvmArgs = ['-javaagent:hotswap.jar']
