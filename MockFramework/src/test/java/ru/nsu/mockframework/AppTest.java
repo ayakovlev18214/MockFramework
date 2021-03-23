@@ -38,12 +38,12 @@ public class AppTest {
     }
 
     @Test public void testStatic() {
-        System.out.println(TestClass.staticStr());
+        Assert.assertEquals("TEST STATIC", TestClass.staticStr());
         try(StaticMock mock = new StaticMock(TestClass.class)) {
-            System.out.println(TestClass.staticStr());
+            Assert.assertNull(TestClass.staticStr());
             JMock.when(TestClass.staticStr()).thenReturn("TEST MOCK");
-            System.out.println(TestClass.staticStr());
+            Assert.assertEquals("TEST MOCK", TestClass.staticStr());
         }
-        System.out.println(TestClass.staticStr());
+        Assert.assertEquals("TEST STATIC", TestClass.staticStr());
     }
 }
