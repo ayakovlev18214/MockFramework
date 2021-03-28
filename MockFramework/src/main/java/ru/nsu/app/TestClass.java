@@ -33,5 +33,6 @@ public class TestClass {
     public int[] testIntArr() {return new int[]{1, 2, 3};}
 
     public void testVoid() {
+
     }
 }

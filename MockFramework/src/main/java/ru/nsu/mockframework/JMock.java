@@ -1,6 +1,5 @@
 package ru.nsu.mockframework;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import javassist.util.HotSwapAgent;
 
 /**
  * Main Framework class
@@ -30,39 +28,19 @@ public class JMock {
     JMock.lastRanMock = lastRanMock;
   }
 
-  private static void incCounter() {
-    counter++;
-  }
-
-  public static void removeFinals(CtClass cc) {
-    try {
-      int modifiers = cc.getModifiers();
-      if (Modifier.isFinal(modifiers)) {
-        int notFinalModifier = Modifier.clear(modifiers, Modifier.FINAL);
-        cc.setModifiers(notFinalModifier);
-      }
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   public static <T> T mock(Class<T> objectClass) {
     try {
       ClassPool cp = ClassPool.getDefault();
-      CtClass oc = cp.get(objectClass.getName());
-      //removeFinals(oc);
-      HotSwapAgent.redefine(objectClass, oc);
       cp.importPackage("ru.nsu.mockframework");
       CtClass cc = cp.makeClass(objectClass.getName() + "MockDelegator" + counter);
       CtClass objClass = cp.get(objectClass.getName());
-
+      //System.out.println(Modifier.isFinal(objClass.getModifiers()));
       CtClass innerInterface = cp.get("ru.nsu.mockframework.IJMock");
 
       cc.setInterfaces(new CtClass[]{innerInterface});
       String className = objectClass.getName() + "Stub" + counter;
       CtClass stub = cp.makeClass(className);
-      incCounter();
+      counter++;
 
       stub.setSuperclass(objClass);
       for (CtMethod method : objClass.getDeclaredMethods()) {
@@ -97,8 +75,9 @@ public class JMock {
         m.setBody(callback + m.getName() + "\", \"" + m.getSignature() + "\", \"" + m.getReturnType().getName() + out);
         cc.addMethod(m);
       }
-
-      T obj = objectClass.cast(cc.toClass().getDeclaredConstructor().newInstance());
+      Object o = cc.toClass().getDeclaredConstructor().newInstance();
+      //System.out.println(cp.getClassLoader());
+      T obj = objectClass.cast(o);
       ((IJMock) obj).setLink(stub.toClass().getDeclaredConstructor().newInstance());
       return obj;
     } catch (InstantiationException
@@ -106,8 +85,7 @@ public class JMock {
       | NoSuchMethodException
       | IllegalAccessException
       | CannotCompileException
-      | NotFoundException
-      | IOException e) {
+      | NotFoundException e) {
       e.printStackTrace();
       throw new RuntimeException("Error while mocking class " + objectClass.getName() + "\n" + e);
     }
