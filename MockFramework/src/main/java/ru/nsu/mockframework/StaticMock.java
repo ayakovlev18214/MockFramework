@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class StaticMock implements AutoCloseable {
+public class StaticMock implements AutoCloseable{
     private final List<CtMethod> save = new ArrayList<>();
     private CtClass cc;
     private static int lastId = 0;
@@ -16,7 +16,7 @@ public class StaticMock implements AutoCloseable {
     private static final List<Object> mocksRefs = new ArrayList<>();
     private final Class<?> staticClass;
 
-    public StaticMock(Class<?> staticClass) {
+    StaticMock(Class<?> staticClass) {
         this.staticClass = staticClass;
         ClassPool cp = ClassPool.getDefault();
         try {

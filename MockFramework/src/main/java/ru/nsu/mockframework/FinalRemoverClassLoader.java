@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FinalRemoverClassLoader extends ClassLoader {
+class FinalRemoverClassLoader extends ClassLoader {
 
     private static Set<String> classes = Collections.emptySet();
 

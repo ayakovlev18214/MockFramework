@@ -23,18 +23,29 @@ public class JMock {
   private static IntermediateMock lastRanMock;
   private static List<JMockArgs> argsList = new ArrayList<>();
 
+  public static <T> StaticMock makeStaticMock(Class<T> tClass) {
+    return new StaticMock(tClass);
+  }
 
   public static void setLastRanMock(IntermediateMock lastRanMock) {
     JMock.lastRanMock = lastRanMock;
   }
 
+
+  /**
+   * Returns the mock object for class objectClass which has all the methods definitions,
+   * but returns null/0 on any method call.
+   * @param objectClass Class, for making mock
+   * @param <T> Type of returned value
+   * @return Mocked object of given class.
+   */
   public static <T> T mock(Class<T> objectClass) {
     try {
       ClassPool cp = ClassPool.getDefault();
       cp.importPackage("ru.nsu.mockframework");
       CtClass cc = cp.makeClass(objectClass.getName() + "MockDelegator" + counter);
       CtClass objClass = cp.get(objectClass.getName());
-      //System.out.println(Modifier.isFinal(objClass.getModifiers()));
+
       CtClass innerInterface = cp.get("ru.nsu.mockframework.IJMock");
 
       cc.setInterfaces(new CtClass[]{innerInterface});
@@ -48,6 +59,9 @@ public class JMock {
           continue;
         }
         CtMethod m = CtNewMethod.copy(method, method.getName(), stub, null);
+        if (Modifier.isFinal(m.getModifiers())) {
+          m.setModifiers(m.getModifiers() & ~Modifier.FINAL);
+        }
         m.setBody(null);
         stub.addMethod(m);
       }
@@ -66,6 +80,9 @@ public class JMock {
           continue;
         }
         CtMethod m = CtNewMethod.copy(method, method.getName(), cc, null);
+        if (Modifier.isFinal(m.getModifiers())) {
+          m.setModifiers(m.getModifiers() & ~Modifier.FINAL);
+        }
         String l = "link.";
         if (!m.getReturnType().getName().equals("void")) {
           l = "return " + l;
@@ -75,9 +92,7 @@ public class JMock {
         m.setBody(callback + m.getName() + "\", \"" + m.getSignature() + "\", \"" + m.getReturnType().getName() + out);
         cc.addMethod(m);
       }
-      Object o = cc.toClass().getDeclaredConstructor().newInstance();
-      //System.out.println(cp.getClassLoader());
-      T obj = objectClass.cast(o);
+      T obj = objectClass.cast(cc.toClass().getDeclaredConstructor().newInstance());
       ((IJMock) obj).setLink(stub.toClass().getDeclaredConstructor().newInstance());
       return obj;
     } catch (InstantiationException
@@ -124,14 +139,14 @@ public class JMock {
     return obj;
   }
 
-  public static <T> void initMocks(Class<T> cl) {
-    for (Field fd : cl.getDeclaredFields()) {
+  public static <T> void initMocks(Object obj) {
+    for (Field fd : obj.getClass().getDeclaredFields()) {
       if (fd.isAnnotationPresent(Mock.class)) {
         fd.setAccessible(true);
         try {
-          fd.set(fd, JMock.mock(fd.getType()));
+          fd.set(obj, JMock.mock(fd.getType()));
         } catch (IllegalAccessException e) {
-          throw new RuntimeException("Can't set mock to the field" + e);
+
         }
         break;
       }

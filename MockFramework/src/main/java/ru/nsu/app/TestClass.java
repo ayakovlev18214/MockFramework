@@ -1,38 +1,30 @@
 package ru.nsu.app;
 
 public class TestClass {
-    private int ret;
 
-    public static void foo() {
-
-    }
-
-    public static String staticStr() {
+    public static String staticGetStr() {
         return "TEST STATIC";
     }
 
-    public String testString(int a, char b) {
-       return "kk";
+    public String getTwoPrimitiveArgsAndReturnStrOfThem(int a, char b) {
+       return a + " " + b;
     }
 
-    public String testString1() {
+    public String getString() {
         return "kek";
     }
 
-    public String testInt1(int integer) {
+    public String getIntAndReturnStrOfGivenInt(int integer) {
         return String.valueOf(integer);
     }
 
 
-    public int testInt() {
+    public int getInt() {
       return 228;
     }
 
-    public char testChar() {return 'a'; }
+    public char getChar() {return 'a'; }
 
-    public int[] testIntArr() {return new int[]{1, 2, 3};}
+    public int[] getIntArr() {return new int[]{1, 2, 3};}
 
-    public void testVoid() {
-
-    }
 }

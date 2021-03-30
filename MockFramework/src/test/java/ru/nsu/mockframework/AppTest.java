@@ -4,60 +4,65 @@
 package ru.nsu.mockframework;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import ru.nsu.app.TestClass;
-import ru.nsu.app.TestClass2;
 
 import static org.junit.Assert.*;
-@RemoveFinals({TestClass2.class})
-@RunWith(JMockFinalRemoverClassRunner.class)
+
 public class AppTest {
-    @Test public void testNonStatic() {
-        TestClass test = new TestClass();
-        assertEquals("kk", test.testString(1, '\0'));
 
-        test = JMock.mock(TestClass.class);
-        assertNull(test.testString(1, '\0'));
+    @Mock
+    private TestClass mock;
 
-        JMock.when(test.testString(JMock.anyNumerical(), JMock.anyChar())).thenReturn("OKAY");
-        assertEquals("OKAY", test.testString(1, '\0'));
+    @Test public void testMockAnnotation() {
+        JMock.initMocks(this);
+        assertEquals(null, mock.getIntAndReturnStrOfGivenInt(5));
 
-        JMock.when(test.testString1()).thenReturn("OKAY2");
-        assertEquals("OKAY2", test.testString1());
+        JMock.when(mock.getIntAndReturnStrOfGivenInt(JMock.anyNumerical())).thenReturn("You put smth");
+        JMock.when(mock.getIntAndReturnStrOfGivenInt(JMock.eq(10))).thenReturn("You put 10");
 
-        JMock.when(test.testChar()).thenReturn('b');
-        assertEquals('b', test.testChar());
-        assertEquals("OKAY2", test.testString1());
-        assertEquals("OKAY", test.testString(1, '\0'));
-
-        JMock.when(test.testInt()).thenReturn(1);
-        assertEquals(1, test.testInt());
-
-        JMock.when(test.testIntArr()).thenReturn(new int[] {5,6,6});
-        assertArrayEquals(new int[] {5,6,6}, test.testIntArr());
-
-        JMock.when(test.testString(JMock.eq(1), JMock.eq('\0'))).thenReturn("OnlyIf1And0");
-        assertEquals("OnlyIf1And0", test.testString(1, '\0'));
-        assertEquals("OKAY", test.testString(0, '\0'));
-        assertEquals("OKAY", test.testString(1, '\n'));
+        assertEquals("You put 10", mock.getIntAndReturnStrOfGivenInt(10));
+        assertEquals("You put smth", mock.getIntAndReturnStrOfGivenInt(555));
     }
 
-    @Test public void testNonStaticFinal() {
-        TestClass2 test = new TestClass2();
-        assertEquals("kek", test.testString1());
-        System.out.println(test.testString1());
-        test = JMock.mock(TestClass2.class);
-        assertNull(test.testString1());
-        System.out.println(test.testString1());
+    @Test public void testNonStatic() {
+        TestClass test = new TestClass();
+        assertEquals("1 \0", test.getTwoPrimitiveArgsAndReturnStrOfThem(1, '\0'));
+
+        test = JMock.mock(TestClass.class);
+        assertNull(test.getTwoPrimitiveArgsAndReturnStrOfThem(1, '\0'));
+
+        JMock.when(
+          test.getTwoPrimitiveArgsAndReturnStrOfThem(JMock.anyNumerical(), JMock.anyChar())
+        ).thenReturn("OKAY");
+        assertEquals("OKAY", test.getTwoPrimitiveArgsAndReturnStrOfThem(1, '\0'));
+
+        JMock.when(test.getString()).thenReturn("OKAY2");
+        assertEquals("OKAY2", test.getString());
+
+        JMock.when(test.getChar()).thenReturn('b');
+        assertEquals('b', test.getChar());
+        assertEquals("OKAY2", test.getString());
+        assertEquals("OKAY", test.getTwoPrimitiveArgsAndReturnStrOfThem(1, '\0'));
+
+        JMock.when(test.getInt()).thenReturn(1);
+        assertEquals(1, test.getInt());
+
+        JMock.when(test.getIntArr()).thenReturn(new int[] {5,6,6});
+        assertArrayEquals(new int[] {5,6,6}, test.getIntArr());
+
+        JMock.when(test.getTwoPrimitiveArgsAndReturnStrOfThem(JMock.eq(1), JMock.eq('\0'))).thenReturn("OnlyIf1And0");
+        assertEquals("OnlyIf1And0", test.getTwoPrimitiveArgsAndReturnStrOfThem(1, '\0'));
+        assertEquals("OKAY", test.getTwoPrimitiveArgsAndReturnStrOfThem(0, '\0'));
+        assertEquals("OKAY", test.getTwoPrimitiveArgsAndReturnStrOfThem(1, '\n'));
     }
 
     @Test public void testStatic() {
-        assertEquals("TEST STATIC", TestClass.staticStr());
-        try(StaticMock mock = new StaticMock(TestClass.class)) {
-            assertNull(TestClass.staticStr());
-            JMock.when(TestClass.staticStr()).thenReturn("TEST MOCK");
-            assertEquals("TEST MOCK", TestClass.staticStr());
+        assertEquals("TEST STATIC", TestClass.staticGetStr());
+        try(StaticMock mock = JMock.makeStaticMock(TestClass.class)) {
+            assertNull(TestClass.staticGetStr());
+            JMock.when(TestClass.staticGetStr()).thenReturn("TEST MOCK");
+            assertEquals("TEST MOCK", TestClass.staticGetStr());
         }
-        assertEquals("TEST STATIC", TestClass.staticStr());
+        assertEquals("TEST STATIC", TestClass.staticGetStr());
     }
 }
