@@ -2,8 +2,12 @@ package ru.nsu.app;
 
 public class TestClass {
 
-    public static String staticGetStr() {
+    public static String staticReturnStr() {
         return "TEST STATIC";
+    }
+
+    public static String staticGetIntAndReturnStr(int i) {
+        return String.valueOf(i);
     }
 
     public String getTwoPrimitiveArgsAndReturnStrOfThem(int a, char b) {

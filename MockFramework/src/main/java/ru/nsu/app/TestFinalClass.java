@@ -6,4 +6,8 @@ public final class TestFinalClass {
         return "kek";
     }
 
+    public final int getIntAndReturnIt(int i) {
+        return i;
+    }
+
 }
