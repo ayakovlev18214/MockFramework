@@ -30,7 +30,7 @@ public class AppFinalClassTest {
 
     JMock.when(test.getIntAndReturnIt(JMock.anyNumerical())).thenReturn(228);
     assertEquals(228, test.getIntAndReturnIt(225));
-    assertEquals(228, test.getIntAndReturnIt(255));
+    assertEquals(228, test.getIntAndReturnIt(555));
   }
 
 }

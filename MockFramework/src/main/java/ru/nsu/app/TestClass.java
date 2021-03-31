@@ -1,5 +1,7 @@
 package ru.nsu.app;
 
+import java.util.List;
+
 public class TestClass {
 
     public static String staticReturnStr() {
@@ -8,6 +10,14 @@ public class TestClass {
 
     public static String staticGetIntAndReturnStr(int i) {
         return String.valueOf(i);
+    }
+
+    public List<String> processStringList(List<String> list) {
+        return list;
+    }
+
+    public int[] processIntArray(int[] arr) {
+        return arr;
     }
 
     public String getTwoPrimitiveArgsAndReturnStrOfThem(int a, char b) {

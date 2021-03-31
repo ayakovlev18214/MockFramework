@@ -3,6 +3,8 @@
  */
 package ru.nsu.mockframework;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import ru.nsu.app.TestClass;
 
@@ -15,7 +17,7 @@ public class AppTest {
 
     @Test public void testMockAnnotation() {
         JMock.initMocks(this);
-        assertEquals(null, mock.getIntAndReturnStrOfGivenInt(5));
+        assertNull(mock.getIntAndReturnStrOfGivenInt(5));
 
         JMock.when(mock.getIntAndReturnStrOfGivenInt(JMock.anyNumerical())).thenReturn("You put smth");
         JMock.when(mock.getIntAndReturnStrOfGivenInt(JMock.eq(10))).thenReturn("You put 10");
@@ -56,7 +58,53 @@ public class AppTest {
         assertEquals("OKAY", test.getTwoPrimitiveArgsAndReturnStrOfThem(1, '\n'));
     }
 
-    @Test public void testStatic() {
+    @Test public void testNonStaticArr() {
+        TestClass test = JMock.mock(TestClass.class);
+        assertNull(test.processIntArray(new int[2]));
+
+        int[] intsToProcess = new int[3];
+        intsToProcess[0] = 5;
+        intsToProcess[1] = 3;
+        intsToProcess[2] = 1;
+
+        int[] intsToReturn = new int[5];
+        intsToReturn[0] = 1;
+        intsToReturn[1] = 3;
+        intsToReturn[2] = 5;
+        intsToReturn[3] = 6;
+        intsToReturn[4] = 8;
+
+        int[] intsForAny = new int[1];
+        intsForAny[0] = 555;
+
+        JMock.when(test.processIntArray(JMock.any())).thenReturn(intsForAny);
+        JMock.when(test.processIntArray(JMock.eq(intsToProcess))).thenReturn(intsToReturn);
+
+        assertEquals(555, test.processIntArray(new int[5])[0]);
+        assertEquals(intsToReturn, test.processIntArray(intsToProcess));
+    }
+
+    @Test public void testNonStaticList() {
+        TestClass test = JMock.mock(TestClass.class);
+
+        assertNull(test.processStringList(new ArrayList<>()));
+        List<String> listToProcess = new ArrayList<>();
+        listToProcess.add("first");
+        listToProcess.add("second");
+
+        List<String> listToReturn = new ArrayList<>();
+        listToReturn.add("firstStr");
+        listToReturn.add("secondStr");
+
+        List<String> listToAny = new ArrayList<>();
+        listToAny.add("emptyList");
+        JMock.when(test.processStringList(JMock.any())).thenReturn(listToAny);
+        JMock.when(test.processStringList(JMock.eq(listToProcess))).thenReturn(listToReturn);
+        assertEquals(listToAny, test.processStringList(new ArrayList<>()));
+        assertEquals(listToReturn, test.processStringList(listToProcess));
+    }
+
+    @Test public void testStaticMethods() {
         assertEquals("TEST STATIC", TestClass.staticReturnStr());
         try(StaticMock mock = JMock.makeStaticMock(TestClass.class)) {
             assertNull(TestClass.staticReturnStr());
